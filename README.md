@@ -16,6 +16,8 @@ OpenReturn is a free, open-source web application that helps anyone understand h
 
 **OpenReturn does NOT file your taxes.** It educates you so you can file them yourself, with confidence.
 
+👉 **[Try OpenReturn Live](https://huggingface.co/spaces/dokababa/OpenReturn)**
+
 ## Philosophy
 
 - **Free forever** — no subscriptions, no credit card, no upsells
