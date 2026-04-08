@@ -3,6 +3,12 @@ from __future__ import annotations
 
 from utils.constants import FILING_STATUSES, INTERVIEW_STAGES, SUPPORTED_TAX_YEARS
 
+
+def _is_citizen_or_resident(s: dict) -> bool:
+    """True if user is a US citizen OR a resident alien."""
+    return s.get("is_us_citizen") is True or s.get("is_resident_alien") is True
+
+
 # Each question: id, text, why, stage, state_key, question_type, options (if any),
 # and skip_condition (optional callable that checks session_state to skip)
 INTERVIEW_QUESTIONS = [
@@ -28,10 +34,21 @@ INTERVIEW_QUESTIONS = [
     {
         "id": 2,
         "text": "Were you physically present in the US for 183 or more days this year?",
-        "why": "If you're not a citizen, this determines if you file as a resident or nonresident alien.",
+        "why": "If you're not a citizen/permanent resident, this helps determine if you file as a resident or nonresident alien.",
         "stage": "residency",
         "state_key": "is_resident_alien",
         "type": "yes_no",
+        # Only ask non-citizens
+        "skip_if": lambda s: s.get("is_us_citizen") is True,
+    },
+    {
+        "id": 13,
+        "text": "Are you an international student or on a visa (F-1, J-1, H-1B, OPT, etc.)?",
+        "why": "Visa holders may have special tax treaty benefits and different filing requirements.",
+        "stage": "residency",
+        "state_key": "is_international_student",
+        "type": "yes_no",
+        # Only ask non-citizens — a US citizen can't be an international student
         "skip_if": lambda s: s.get("is_us_citizen") is True,
     },
     # STAGE 2 — Personal
@@ -53,6 +70,8 @@ INTERVIEW_QUESTIONS = [
         "type": "yes_no",
     },
     # STAGE 3 — Income
+    # Form-count questions are handled by the interview UI as number inputs.
+    # These remain as yes_no in the data model so the form agent still works.
     {
         "id": 5,
         "text": "Did you receive a W-2 from an employer this year?",
@@ -100,6 +119,8 @@ INTERVIEW_QUESTIONS = [
         "stage": "income",
         "state_key": "has_1042s",
         "type": "yes_no",
+        # Only relevant for non-citizens / non-residents
+        "skip_if": lambda s: s.get("is_us_citizen") is True and s.get("is_international_student") is not True,
     },
     {
         "id": 11,
@@ -111,18 +132,10 @@ INTERVIEW_QUESTIONS = [
     },
     {
         "id": 12,
-        "text": "Did you have any income earned in a foreign country?",
-        "why": "Foreign income has special reporting rules and may qualify for exclusions.",
+        "text": "Did you earn income in a foreign country?",
+        "why": "Foreign-earned income has special reporting rules and may qualify for the Foreign Earned Income Exclusion.",
         "stage": "income",
         "state_key": "has_foreign_income",
-        "type": "yes_no",
-    },
-    {
-        "id": 13,
-        "text": "Are you an international student (F-1, J-1, or other visa)?",
-        "why": "International students often have special tax treaty benefits and different filing requirements.",
-        "stage": "income",
-        "state_key": "is_international_student",
         "type": "yes_no",
     },
     # STAGE 4 — Deductions
@@ -165,6 +178,7 @@ INTERVIEW_QUESTIONS = [
         "stage": "deductions",
         "state_key": "has_home_office",
         "type": "yes_no",
+        # Only show if user has freelance income
         "skip_if": lambda s: not s.get("has_1099_nec"),
     },
     # STAGE 5 — Credits
@@ -175,6 +189,8 @@ INTERVIEW_QUESTIONS = [
         "stage": "credits",
         "state_key": "has_childcare",
         "type": "yes_no",
+        # Only relevant if user has dependents
+        "skip_if": lambda s: not s.get("has_dependents"),
     },
     {
         "id": 20,

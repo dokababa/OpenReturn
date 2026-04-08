@@ -25,7 +25,7 @@ INCOME_FORM_KEYS = [
 ]
 
 # These income questions are yes/no and stay as separate questions
-INCOME_YESNO_KEYS = {"has_capital_gains", "has_foreign_income", "is_international_student"}
+INCOME_YESNO_KEYS = {"has_capital_gains", "has_foreign_income"}
 
 
 def _render_stage_select(questions: list[dict]):
@@ -99,12 +99,19 @@ def _render_income_forms_screen():
         unsafe_allow_html=True,
     )
 
+    # Filter out 1042-S for US citizens (it's only for foreign persons)
+    is_citizen = st.session_state.get("is_us_citizen") is True
+    visible_forms = [
+        f for f in INCOME_FORM_KEYS
+        if not (f[0] == "has_1042s" and is_citizen)
+    ]
+
     st.markdown(
         '<div class="section-card">',
         unsafe_allow_html=True,
     )
 
-    for state_key, form_name, description in INCOME_FORM_KEYS:
+    for state_key, form_name, description in visible_forms:
         col1, col2 = st.columns([3, 1])
         with col1:
             st.markdown(
@@ -183,7 +190,7 @@ def render():
     if current_stage_key == "income":
         _render_income_forms_screen()
 
-        # Remaining income yes/no questions
+        # Remaining income yes/no questions (investments, foreign income)
         yesno_qs = [q for q in stage_questions if q["state_key"] in INCOME_YESNO_KEYS]
         if yesno_qs:
             st.markdown("---")
