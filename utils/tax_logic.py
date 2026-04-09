@@ -225,6 +225,22 @@ FORM_LINES = {
         {"line": "Line 19", "label": "Lifetime Learning Credit — adjusted qualified expenses"},
         {"line": "Line 20", "label": "Multiply line 19 by 20% (max $2,000)"},
     ],
+    "Form 8843": [
+        # Part I — all exempt individuals
+        {"line": "Part I — Line 1", "label": "US visa type (e.g. F-1, J-1)"},
+        {"line": "Part I — Line 2", "label": "Number of days you were present in the US in the current and two prior years"},
+        {"line": "Part I — Line 3", "label": "Number of days claimed as exempt from the Substantial Presence Test"},
+        {"line": "Part I — Line 4", "label": "Name and address of your US educational institution or employer"},
+        # Part II — students (F or J visa)
+        {"line": "Part II — Line 5a", "label": "Name and address of your school in the US"},
+        {"line": "Part II — Line 5b", "label": "Name and address of your academic director or department head"},
+        {"line": "Part II — Line 5c", "label": "Type of US visa and date you entered the US on that visa"},
+        {"line": "Part II — Line 5d", "label": "Current nonimmigrant status and date your status was acquired"},
+        {"line": "Part II — Line 5e", "label": "Visa and date of any change in visa or immigration status"},
+        {"line": "Part II — Line 6", "label": "Were you previously exempt? List each previous exempt year and the category claimed"},
+        # Signature
+        {"line": "Signature", "label": "Your signature, date, and current mailing address"},
+    ],
 }
 
 

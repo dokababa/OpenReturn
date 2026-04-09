@@ -6,6 +6,7 @@ from agents.form_agent import determine_forms
 from ui.components import (
     apply_styles,
     render_disclaimer_banner,
+    render_federal_only_banner,
     render_form_card,
     render_header,
 )
@@ -16,6 +17,7 @@ def render():
     """Render the forms summary page."""
     apply_styles()
     render_header()
+    render_federal_only_banner()
     render_disclaimer_banner()
 
     answers = get_interview_answers()

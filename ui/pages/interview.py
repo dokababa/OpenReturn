@@ -9,7 +9,7 @@ from agents.interview_agent import (
     get_total_questions,
     INTERVIEW_QUESTIONS,
 )
-from ui.components import apply_styles, render_disclaimer_banner, render_header
+from ui.components import apply_styles, render_disclaimer_banner, render_federal_only_banner, render_header
 from utils.constants import INTERVIEW_STAGES
 from utils.session_state import navigate_to
 
@@ -28,64 +28,70 @@ INCOME_FORM_KEYS = [
 INCOME_YESNO_KEYS = {"has_capital_gains", "has_foreign_income"}
 
 
-def _render_stage_select(questions: list[dict]):
-    """Render select-type questions for the current stage."""
+def _render_yesno(q: dict):
+    """Render a single yes/no question as Yes/No buttons."""
+    current = st.session_state.get(q["state_key"])
+    st.markdown(f"**{q['text']}**")
+    st.markdown(
+        f'<div class="question-why">{q["why"]}</div>',
+        unsafe_allow_html=True,
+    )
+    col1, col2, col3 = st.columns([1, 1, 3])
+    with col1:
+        if st.button(
+            "Yes",
+            key=f"yes_{q['id']}",
+            use_container_width=True,
+            type="primary" if current is True else "secondary",
+        ):
+            st.session_state[q["state_key"]] = True
+            st.rerun()
+    with col2:
+        if st.button(
+            "No",
+            key=f"no_{q['id']}",
+            use_container_width=True,
+            type="primary" if current is False else "secondary",
+        ):
+            st.session_state[q["state_key"]] = False
+            st.rerun()
+    st.markdown("")
+
+
+def _render_select(q: dict):
+    """Render a single select question."""
+    options = q.get("options", [])
+    current_val = st.session_state.get(q["state_key"])
+    default_idx = 0
+    if current_val and str(current_val) in options:
+        default_idx = options.index(str(current_val)) + 1
+
+    st.markdown(f"### {q['text']}")
+    st.markdown(
+        f'<div class="question-why">{q["why"]}</div>',
+        unsafe_allow_html=True,
+    )
+    selected = st.selectbox(
+        "Select one:",
+        options=["-- Choose --"] + options,
+        index=default_idx,
+        key=f"sel_{q['id']}",
+        label_visibility="collapsed",
+    )
+    if selected and selected != "-- Choose --":
+        value = selected
+        if q["state_key"] == "selected_tax_year":
+            value = int(selected)
+        st.session_state[q["state_key"]] = value
+
+
+def _render_stage_questions_in_order(questions: list[dict]):
+    """Render all questions for a stage in natural dependency order."""
     for q in questions:
-        options = q.get("options", [])
-        current_val = st.session_state.get(q["state_key"])
-        # Find the default index
-        default_idx = 0
-        if current_val and str(current_val) in options:
-            default_idx = options.index(str(current_val)) + 1
-
-        st.markdown(f"### {q['text']}")
-        st.markdown(
-            f'<div class="question-why">{q["why"]}</div>',
-            unsafe_allow_html=True,
-        )
-        selected = st.selectbox(
-            "Select one:",
-            options=["-- Choose --"] + options,
-            index=default_idx,
-            key=f"sel_{q['id']}",
-            label_visibility="collapsed",
-        )
-        if selected and selected != "-- Choose --":
-            value = selected
-            if q["state_key"] == "selected_tax_year":
-                value = int(selected)
-            st.session_state[q["state_key"]] = value
-
-
-def _render_stage_yesno(questions: list[dict]):
-    """Render yes/no questions as toggles."""
-    for q in questions:
-        current = st.session_state.get(q["state_key"])
-        st.markdown(f"**{q['text']}**")
-        st.markdown(
-            f'<div class="question-why">{q["why"]}</div>',
-            unsafe_allow_html=True,
-        )
-        col1, col2, col3 = st.columns([1, 1, 3])
-        with col1:
-            if st.button(
-                "Yes",
-                key=f"yes_{q['id']}",
-                use_container_width=True,
-                type="primary" if current is True else "secondary",
-            ):
-                st.session_state[q["state_key"]] = True
-                st.rerun()
-        with col2:
-            if st.button(
-                "No",
-                key=f"no_{q['id']}",
-                use_container_width=True,
-                type="primary" if current is False else "secondary",
-            ):
-                st.session_state[q["state_key"]] = False
-                st.rerun()
-        st.markdown("")
+        if q["type"] == "yes_no":
+            _render_yesno(q)
+        elif q["type"] == "select":
+            _render_select(q)
 
 
 def _render_income_forms_screen():
@@ -134,7 +140,7 @@ def _render_income_forms_screen():
 
 
 def _get_stage_questions(stage_key: str, session_state: dict) -> list[dict]:
-    """Get active questions for a specific stage."""
+    """Get active questions for a specific stage, in their natural order."""
     questions = []
     for q in INTERVIEW_QUESTIONS:
         if q["stage"] != stage_key:
@@ -150,6 +156,7 @@ def render():
     """Render the interview page, one stage at a time."""
     apply_styles()
     render_header()
+    render_federal_only_banner()
 
     # Initialize interview_stage if not set
     if "interview_stage_idx" not in st.session_state:
@@ -172,12 +179,48 @@ def render():
     # Progress bar
     st.progress(
         (stage_idx + 1) / total_stages,
-        text=f"Stage {stage_idx + 1} of {total_stages} -- {current_stage_name}",
+        text=f"Stage {stage_idx + 1} of {total_stages} — {current_stage_name}",
     )
 
     render_disclaimer_banner()
 
-    # Get questions for this stage
+    # Show SPT explainer when on residency stage for international students
+    if current_stage_key == "residency" and st.session_state.get("is_international_student") is True:
+        visa = st.session_state.get("visa_type", "")
+        years = st.session_state.get("years_in_us_as_student", "")
+        if visa in ("F-1", "J-1"):
+            is_long_term = years == "5 or more years"
+            if is_long_term:
+                st.info(
+                    "Since you've been in the US for 5+ years on an F-1/J-1 visa, "
+                    "you may now meet the Substantial Presence Test and file as a **resident alien** "
+                    "(Form 1040). Verify this with the IRS SPT calculator or a tax advisor."
+                )
+            elif years:
+                st.info(
+                    "F-1/J-1 students in their first 5 years are **exempt from the Substantial "
+                    "Presence Test** — you file as a nonresident alien using **Form 1040-NR**, "
+                    "regardless of how many days you were in the US this year."
+                )
+
+    # Show treaty info when home country is selected
+    if current_stage_key == "residency":
+        home_country = st.session_state.get("home_country")
+        if home_country:
+            from utils.constants import TREATY_COUNTRIES
+            treaty = TREATY_COUNTRIES.get(home_country, {})
+            if treaty.get("benefit"):
+                st.success(
+                    f"**Treaty benefit found for {home_country}** ({treaty['article']}): "
+                    f"{treaty['benefit']} — We'll include Form 8833 in your form list."
+                )
+            elif treaty.get("article") == "No treaty":
+                st.info(
+                    f"The US does not currently have a tax treaty with {home_country}. "
+                    "Your income may still be eligible for other deductions — we'll guide you through it."
+                )
+
+    # Get questions for this stage (filtered by skip conditions, in natural order)
     stage_questions = _get_stage_questions(current_stage_key, session_dict)
 
     if not stage_questions:
@@ -194,18 +237,12 @@ def render():
         yesno_qs = [q for q in stage_questions if q["state_key"] in INCOME_YESNO_KEYS]
         if yesno_qs:
             st.markdown("---")
-            _render_stage_yesno(yesno_qs)
+            for q in yesno_qs:
+                _render_yesno(q)
 
     else:
-        select_qs = [q for q in stage_questions if q["type"] == "select"]
-        yesno_qs = [q for q in stage_questions if q["type"] == "yes_no"]
-
-        if select_qs:
-            _render_stage_select(select_qs)
-        if yesno_qs:
-            if select_qs:
-                st.markdown("---")
-            _render_stage_yesno(yesno_qs)
+        # Render all questions in their natural dependency order
+        _render_stage_questions_in_order(stage_questions)
 
     # Navigation buttons
     st.markdown("---")
@@ -228,7 +265,6 @@ def render():
                     can_continue = False
                     break
             elif q["type"] == "yes_no" and q["state_key"] not in INCOME_YESNO_KEYS:
-                # For non-income yes/no, require an answer
                 val = st.session_state.get(q["state_key"])
                 if val is None and current_stage_key != "income":
                     can_continue = False

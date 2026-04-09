@@ -71,6 +71,21 @@ _DOCUMENT_DEFS = [
         "filename": "i1099nec.pdf",
         "forms": ["Schedule C"],
     },
+    {
+        "name": "Form 8843 Instructions",
+        "filename": "i8843.pdf",
+        "forms": ["8843"],
+    },
+    {
+        "name": "Publication 970 - Tax Benefits for Education",
+        "filename": "p970.pdf",
+        "forms": ["8863", "1040", "1040-NR"],
+    },
+    {
+        "name": "Publication 515 - Withholding of Tax on Nonresident Aliens",
+        "filename": "p515.pdf",
+        "forms": ["1040-NR", "8843"],
+    },
 ]
 
 

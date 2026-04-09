@@ -228,5 +228,65 @@ CUSTOM_CSS = """
     .stAlert > div {
         color: #1a2e2a !important;
     }
+
+    /* === Federal-only persistent banner === */
+    .federal-banner {
+        background: #e8f4fd !important;
+        border: 1px solid #90caf9;
+        border-left: 4px solid #1976d2;
+        border-radius: 6px;
+        padding: 0.5rem 1rem;
+        margin: 0.5rem 0 1rem 0;
+        color: #0d3c61 !important;
+        font-size: 0.88rem;
+        font-weight: 500;
+    }
+    .federal-banner strong {
+        color: #0a2e4a !important;
+    }
+
+    /* === Landing trust strip === */
+    .trust-strip {
+        display: flex;
+        justify-content: center;
+        gap: 0;
+        margin: 1rem 0 1.5rem 0;
+    }
+    .trust-item {
+        text-align: center;
+        padding: 0.75rem 1.25rem;
+        background: #ffffff !important;
+        border: 1px solid #d1ddd8;
+        border-radius: 8px;
+        margin: 0 0.3rem;
+        font-size: 0.9rem;
+        color: #1a2e2a !important;
+        font-weight: 600;
+    }
+    .trust-item .trust-icon {
+        font-size: 1.3rem;
+        display: block;
+        margin-bottom: 0.2rem;
+    }
+
+    /* === Landing flow diagram === */
+    .flow-step {
+        text-align: center;
+        padding: 0.6rem 0.5rem;
+        background: #1e6f5c !important;
+        border-radius: 8px;
+        color: #ffffff !important;
+        font-size: 0.82rem;
+        font-weight: 600;
+    }
+    .flow-step span {
+        color: #ffffff !important;
+    }
+    .flow-arrow {
+        text-align: center;
+        font-size: 1.2rem;
+        color: #6b8f84 !important;
+        padding-top: 0.4rem;
+    }
 </style>
 """

@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 
 import streamlit as st
 
-from ui.components import apply_styles, render_full_disclaimer, render_header
+from ui.components import apply_styles, render_federal_only_banner, render_full_disclaimer, render_header
 from utils.constants import PRIVACY_NOTICE
 from utils.session_state import navigate_to
 
@@ -13,6 +13,7 @@ def render():
     """Render the disclaimer page."""
     apply_styles()
     render_header()
+    render_federal_only_banner()
 
     st.markdown("### Before You Download Your Tax Roadmap")
     st.markdown(

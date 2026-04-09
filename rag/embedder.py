@@ -1,13 +1,10 @@
-"""Embedding pipeline using sentence-transformers (free, local, no API needed)."""
+"""Embedding pipeline using FastEmbed (ONNX-based, no PyTorch required)."""
 
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.embeddings import FastEmbedEmbeddings
 
 from utils.constants import EMBEDDING_MODEL
 
 
 def get_embeddings():
-    """Get the sentence-transformers embedding model."""
-    return HuggingFaceEmbeddings(
-        model_name=EMBEDDING_MODEL,
-        model_kwargs={"device": "cpu"},
-    )
+    """Get the FastEmbed embedding model (ONNX, no PyTorch dependency)."""
+    return FastEmbedEmbeddings(model_name=EMBEDDING_MODEL)

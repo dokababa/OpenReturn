@@ -6,6 +6,7 @@ from agents.guidance_agent import generate_form_guidance
 from ui.components import (
     apply_styles,
     render_disclaimer_banner,
+    render_federal_only_banner,
     render_guidance_box,
     render_header,
 )
@@ -16,6 +17,7 @@ def render():
     """Render the guidance page."""
     apply_styles()
     render_header()
+    render_federal_only_banner()
     render_disclaimer_banner(style="red")
 
     forms = st.session_state.get("required_forms", [])
@@ -94,14 +96,17 @@ def render():
             with tab:
                 guidance_list = guidance_by_form.get(form_name, [])
                 for g in guidance_list:
-                    render_guidance_box(g)
                     key = f"{form_name}_{g['line']}"
-                    confirmed = st.checkbox(
-                        f"I confirm I will enter {g['line']} myself",
-                        key=f"confirm_{key}",
-                        value=st.session_state.confirmed_lines.get(key, False),
-                    )
-                    st.session_state.confirmed_lines[key] = confirmed
+                    is_confirmed = st.session_state.confirmed_lines.get(key, False)
+                    label_suffix = " ✓" if is_confirmed else ""
+                    with st.expander(f"{g['line']}: {g.get('label', '')} {label_suffix}"):
+                        render_guidance_box(g)
+                        confirmed = st.checkbox(
+                            f"I confirm I will enter {g['line']} myself",
+                            key=f"confirm_{key}",
+                            value=is_confirmed,
+                        )
+                        st.session_state.confirmed_lines[key] = confirmed
 
     # Proceed button
     st.markdown("---")

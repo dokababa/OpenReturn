@@ -1,7 +1,7 @@
 """LangGraph-powered conversational interview agent."""
 from __future__ import annotations
 
-from utils.constants import FILING_STATUSES, INTERVIEW_STAGES, SUPPORTED_TAX_YEARS
+from utils.constants import FILING_STATUSES, INTERVIEW_STAGES, STUDENT_VISA_TYPES, SUPPORTED_TAX_YEARS, TREATY_COUNTRIES
 
 
 def _is_citizen_or_resident(s: dict) -> bool:
@@ -48,8 +48,37 @@ INTERVIEW_QUESTIONS = [
         "stage": "residency",
         "state_key": "is_international_student",
         "type": "yes_no",
-        # Only ask non-citizens — a US citizen can't be an international student
         "skip_if": lambda s: s.get("is_us_citizen") is True,
+    },
+    {
+        "id": 22,
+        "text": "What type of visa are you on?",
+        "why": "Your visa type determines which forms you must file. F-1 and J-1 students must file Form 8843 every year — even with zero income.",
+        "stage": "residency",
+        "state_key": "visa_type",
+        "type": "select",
+        "options": STUDENT_VISA_TYPES,
+        "skip_if": lambda s: s.get("is_us_citizen") is True or s.get("is_international_student") is not True,
+    },
+    {
+        "id": 24,
+        "text": "What country are you originally from?",
+        "why": "The US has tax treaties with many countries that can reduce or eliminate tax on scholarship and fellowship income for students. We'll check if your country has a treaty.",
+        "stage": "residency",
+        "state_key": "home_country",
+        "type": "select",
+        "options": sorted(TREATY_COUNTRIES.keys()),
+        "skip_if": lambda s: s.get("is_us_citizen") is True or s.get("is_international_student") is not True,
+    },
+    {
+        "id": 23,
+        "text": "How many years have you been present in the US as a student (F-1/J-1)?",
+        "why": "F-1/J-1 students are exempt from the Substantial Presence Test for their first 5 years, meaning you file as a nonresident alien (Form 1040-NR) regardless of days in the US.",
+        "stage": "residency",
+        "state_key": "years_in_us_as_student",
+        "type": "select",
+        "options": ["1 year or less", "2 years", "3 years", "4 years", "5 or more years"],
+        "skip_if": lambda s: s.get("visa_type") not in ("F-1", "J-1"),
     },
     # STAGE 2 — Personal
     {
@@ -60,6 +89,15 @@ INTERVIEW_QUESTIONS = [
         "state_key": "filing_status",
         "type": "select",
         "options": FILING_STATUSES,
+    },
+    {
+        "id": 27,
+        "text": "Do you have a Social Security Number (SSN) or Individual Taxpayer Identification Number (ITIN)?",
+        "why": "You need an SSN or ITIN to file a US tax return. If you don't have either, you'll need to apply for an ITIN (Form W-7) — we'll explain this at the end.",
+        "stage": "personal",
+        "state_key": "has_itin",
+        "type": "yes_no",
+        "skip_if": lambda s: s.get("is_us_citizen") is True,
     },
     {
         "id": 4,
@@ -121,6 +159,23 @@ INTERVIEW_QUESTIONS = [
         "type": "yes_no",
         # Only relevant for non-citizens / non-residents
         "skip_if": lambda s: s.get("is_us_citizen") is True and s.get("is_international_student") is not True,
+    },
+    {
+        "id": 25,
+        "text": "Did you receive a 1098-T (Tuition Statement) from your school?",
+        "why": "A 1098-T reports tuition paid and scholarships received. It may qualify you for education tax credits (up to $2,500) or require you to report taxable scholarship income.",
+        "stage": "income",
+        "state_key": "has_1098t",
+        "type": "yes_no",
+    },
+    {
+        "id": 26,
+        "text": "Did your scholarship or fellowship exceed your qualified tuition and fees?",
+        "why": "Scholarship money used for tuition is tax-free. Any amount used for living expenses (rent, food, etc.) is generally taxable and must be reported.",
+        "stage": "income",
+        "state_key": "scholarship_exceeds_tuition",
+        "type": "yes_no",
+        "skip_if": lambda s: not s.get("has_1098t") and not s.get("has_1042s"),
     },
     {
         "id": 11,

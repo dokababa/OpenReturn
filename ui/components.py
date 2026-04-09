@@ -16,6 +16,16 @@ def render_header():
     st.markdown(f'<div class="main-header">{APP_NAME}</div>', unsafe_allow_html=True)
 
 
+def render_federal_only_banner():
+    """Render a persistent federal-taxes-only info banner."""
+    st.markdown(
+        '<div class="federal-banner">'
+        "<strong>Federal taxes only</strong> — OpenReturn does not cover state or local tax filing."
+        "</div>",
+        unsafe_allow_html=True,
+    )
+
+
 def render_disclaimer_banner(style: str = "yellow"):
     """Render a disclaimer banner."""
     css_class = "disclaimer-banner-red" if style == "red" else "disclaimer-banner"
