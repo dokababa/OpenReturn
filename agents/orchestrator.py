@@ -4,7 +4,7 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from langgraph.graph import END, StateGraph
+from langgraph.graph import END, START, StateGraph
 
 from agents.form_agent import determine_forms
 from agents.guidance_agent import generate_form_guidance
@@ -77,7 +77,7 @@ def run_full_pipeline(
     workflow.add_node("form_determination", form_determination_node)
     workflow.add_node("guidance", guidance_node)
 
-    workflow.set_entry_point("interview")
+    workflow.add_edge(START, "interview")
     workflow.add_edge("interview", "form_determination")
     workflow.add_conditional_edges(
         "form_determination",
