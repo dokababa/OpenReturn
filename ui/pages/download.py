@@ -3,9 +3,11 @@
 import streamlit as st
 
 from pdf.cheatsheet_generator import generate_cheatsheet
-from ui.components import apply_styles, render_disclaimer_banner, render_header
+from ui.components import apply_styles, render_disclaimer_banner, render_federal_only_banner, render_header
 from utils.constants import (
+    IRS_8843_URL,
     IRS_FREE_FILE_URL,
+    IRS_ITIN_URL,
     IRS_VITA_URL,
     IRS_WHERE_TO_FILE_URL,
     TAX_YEAR,
@@ -17,6 +19,7 @@ def render():
     """Render the download page."""
     apply_styles()
     render_header()
+    render_federal_only_banner()
     render_disclaimer_banner(style="red")
 
     answers = get_interview_answers()
@@ -80,6 +83,33 @@ def render():
 - **Where to Mail Your Return:** [{IRS_WHERE_TO_FILE_URL}]({IRS_WHERE_TO_FILE_URL})
 """
     )
+
+    # ITIN guide for international students
+    if answers.get("is_international_student") or answers.get("is_f_or_j_visa"):
+        st.markdown("### International Student Resources")
+        with st.expander("Do you have an SSN or ITIN?"):
+            st.markdown(
+                f"""
+You need either a **Social Security Number (SSN)** or an **Individual Taxpayer Identification
+Number (ITIN)** to file a US tax return.
+
+**If you work on campus or have OPT/CPT authorization:** You should have an SSN from your employer.
+
+**If you have no US income (zero-income filer):** You still need to file Form 8843, but you
+may not need an SSN or ITIN — Form 8843 can be filed without one in some cases.
+Check the Form 8843 instructions for details.
+
+**If you have US income but no SSN:** You need to apply for an ITIN using **Form W-7**.
+- Download Form W-7: [{IRS_ITIN_URL}]({IRS_ITIN_URL})
+- Submit Form W-7 with your tax return and required identity documents
+- Processing typically takes 7-11 weeks
+- Many university international student offices (ISO/DSO) can help you with this process
+
+**Form 8843 reminder:** Every F-1 and J-1 visa holder must file Form 8843 each year,
+even with zero income. The deadline is the same as your tax return.
+- Form 8843 info: [{IRS_8843_URL}]({IRS_8843_URL})
+"""
+            )
 
     st.markdown("---")
 

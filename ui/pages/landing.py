@@ -24,6 +24,35 @@ def render():
 
     render_disclaimer_banner(style="yellow")
 
+    # Primary CTA above the fold
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.button(
+            "Start My Tax Guidance",
+            type="primary",
+            use_container_width=True,
+        ):
+            navigate_to("interview")
+
+    st.divider()
+
+    # International student callout
+    with st.expander("Are you an international student? Read this first."):
+        st.markdown(
+            """
+**OpenReturn is built with international students in mind.** Here's what you should know before filing:
+
+- **You likely file Form 1040-NR**, not the standard Form 1040 — different rules apply
+- **Form 8843 is required every year** for F-1 and J-1 visa holders, even if you had zero income
+- **Your scholarship may be partially taxable** — the portion covering living expenses (not tuition) is generally taxable
+- **Your country may have a tax treaty** with the US that reduces or eliminates tax on your scholarship or wages — the interview will check this
+- **Deadline:** International students have until **June 15** to file (not April 15)
+- **No SSN?** You may need to apply for an ITIN (Form W-7) — we'll guide you at the end
+
+OpenReturn will walk you through all of this step by step, free of charge.
+"""
+        )
+
     st.markdown("### What OpenReturn Does")
     st.markdown(
         """
@@ -35,30 +64,20 @@ def render():
 """
     )
 
-    st.markdown("### What OpenReturn Does NOT Do")
-    st.markdown(
-        """
-- Does **not** file your taxes for you
-- Does **not** calculate your exact tax owed
-- Does **not** constitute professional tax advice
+    with st.expander("Important Limits to Know"):
+        st.markdown(
+            """
+- Does **not** file your taxes for you — you submit the return yourself
+- Does **not** calculate your exact tax owed — use IRS Free File or a tax professional for that
+- Does **not** constitute professional tax or legal advice
 - Does **not** store any of your personal financial data
 - Does **not** collect SSNs, bank details, or addresses
+- **Federal only** — state and local tax filing is not covered
 """
-    )
+        )
 
     st.markdown("### Your Privacy")
     st.info(PRIVACY_NOTICE)
-
-    st.divider()
-
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        if st.button(
-            "Start My Tax Guidance",
-            type="primary",
-            use_container_width=True,
-        ):
-            navigate_to("interview")
 
     st.markdown("")
 

@@ -11,7 +11,7 @@ SMART_MODEL = "llama-3.3-70b-versatile"
 FAST_MODEL = "llama-3.1-8b-instant"
 
 # Embedding model
-EMBEDDING_MODEL = "all-MiniLM-L6-v2"
+EMBEDDING_MODEL = "BAAI/bge-small-en-v1.5"
 
 # ChromaDB
 CHROMA_COLLECTION_NAME = "irs_documents"
@@ -35,6 +35,129 @@ FILING_STATUSES = [
     "Married Filing Separately",
     "Head of Household",
 ]
+
+# Visa types shown in the interview
+STUDENT_VISA_TYPES = ["F-1", "J-1", "OPT (post-F-1)", "H-1B", "H-4", "L-1", "O-1", "TN", "Other"]
+
+# Countries with US tax treaties relevant to students.
+# benefit: None means no treaty — users from those countries get no exemption.
+# Educational reference only — verify against IRS Publication 901.
+TREATY_COUNTRIES = {
+    "China (PRC)": {
+        "article": "Article 20",
+        "benefit": (
+            "Students from China may exclude up to $5,000 of wages/compensation per year "
+            "from US tax. Scholarship and fellowship income for study is also generally exempt."
+        ),
+    },
+    "India": {
+        "article": "Article 21",
+        "benefit": (
+            "Students from India may exclude certain scholarship, fellowship, and stipend "
+            "income received for education or training from US tax."
+        ),
+    },
+    "South Korea": {
+        "article": "Article 21",
+        "benefit": (
+            "Students from South Korea may exclude income received for maintenance, study, "
+            "or training from US tax for up to 5 years."
+        ),
+    },
+    "Philippines": {
+        "article": "Article 22",
+        "benefit": (
+            "Students from the Philippines may exclude payments received for maintenance, "
+            "education, or training from US tax for a reasonable period."
+        ),
+    },
+    "Pakistan": {
+        "article": "Article XV",
+        "benefit": (
+            "Students from Pakistan may exclude grants, scholarships, and stipends received "
+            "from outside the US for maintenance and education."
+        ),
+    },
+    "Indonesia": {
+        "article": "Article 19",
+        "benefit": (
+            "Students from Indonesia may exclude income received for maintenance and education "
+            "from US tax for a limited period while studying."
+        ),
+    },
+    "Thailand": {
+        "article": "Article 22",
+        "benefit": (
+            "Students from Thailand may exclude payments received for maintenance, "
+            "education, or training from US tax for a reasonable period."
+        ),
+    },
+    "Morocco": {
+        "article": "Article 18",
+        "benefit": "Students from Morocco may exclude income received for maintenance and education from US tax.",
+    },
+    "Romania": {
+        "article": "Article 20",
+        "benefit": "Students from Romania may exclude amounts received from abroad for maintenance, education, or training.",
+    },
+    "Hungary": {
+        "article": "Article 17",
+        "benefit": "Students from Hungary may exclude payments received for maintenance, study, or training for a limited period.",
+    },
+    "Canada": {
+        "article": "Article XX",
+        "benefit": (
+            "Students from Canada may exclude scholarship, fellowship, and bursary income "
+            "from US tax. Review IRS Pub 901 Article XX for full details."
+        ),
+    },
+    "UK": {
+        "article": "Article 20",
+        "benefit": "Students from the UK may exclude payments for maintenance and education from US tax for a limited period.",
+    },
+    "Germany": {
+        "article": "Article 20",
+        "benefit": "Students from Germany may exclude payments for maintenance and education from US tax while studying.",
+    },
+    "France": {
+        "article": "Article 21",
+        "benefit": "Students from France may exclude payments for maintenance and education from US tax for a limited period.",
+    },
+    "Japan": {
+        "article": "Article 20",
+        "benefit": "Students from Japan may exclude payments for maintenance, study, or training from US tax for a limited period.",
+    },
+    "Netherlands": {
+        "article": "Article 22",
+        "benefit": "Students from the Netherlands may exclude payments for maintenance and education from US tax.",
+    },
+    "Sweden": {
+        "article": "Article 22",
+        "benefit": "Students from Sweden may exclude payments for maintenance and education from US tax for up to 5 years.",
+    },
+    "Norway": {
+        "article": "Article 16",
+        "benefit": "Students from Norway may exclude payments for maintenance and education from US tax for a limited period.",
+    },
+    "Mexico": {
+        "article": "Article 21",
+        "benefit": "Students from Mexico may exclude scholarship and fellowship income from US tax while studying.",
+    },
+    "Bangladesh": {"article": "No treaty", "benefit": None},
+    "Nepal": {"article": "No treaty", "benefit": None},
+    "Nigeria": {"article": "No treaty", "benefit": None},
+    "Ghana": {"article": "No treaty", "benefit": None},
+    "Kenya": {"article": "No treaty", "benefit": None},
+    "Brazil": {"article": "No treaty", "benefit": None},
+    "Colombia": {"article": "No treaty", "benefit": None},
+    "Other": {
+        "article": "Check IRS Pub 901",
+        "benefit": (
+            "The US has tax treaties with many countries. Check IRS Publication 901 "
+            "to see if your country has a treaty and what student benefits apply."
+        ),
+    },
+}
 
 # Disclaimer
 DISCLAIMER_TEXT = """IMPORTANT DISCLAIMER — PLEASE READ CAREFULLY
@@ -85,3 +208,6 @@ No analytics that capture user inputs."""
 IRS_FREE_FILE_URL = "https://www.irs.gov/filing/free-file-do-your-federal-taxes-for-free"
 IRS_VITA_URL = "https://www.irs.gov/individuals/free-tax-return-preparation-for-qualifying-taxpayers"
 IRS_WHERE_TO_FILE_URL = "https://www.irs.gov/filing/where-to-file-paper-tax-returns-with-or-without-a-payment"
+IRS_ITIN_URL = "https://www.irs.gov/individuals/individual-taxpayer-identification-number"
+IRS_8843_URL = "https://www.irs.gov/forms-pubs/about-form-8843"
+IRS_PUB_519_URL = "https://www.irs.gov/pub/irs-pdf/p519.pdf"

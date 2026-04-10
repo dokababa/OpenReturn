@@ -228,5 +228,21 @@ CUSTOM_CSS = """
     .stAlert > div {
         color: #1a2e2a !important;
     }
+
+    /* === Federal-only persistent banner === */
+    .federal-banner {
+        background: #e8f4fd !important;
+        border: 1px solid #90caf9;
+        border-left: 4px solid #1976d2;
+        border-radius: 6px;
+        padding: 0.5rem 1rem;
+        margin: 0.5rem 0 1rem 0;
+        color: #0d3c61 !important;
+        font-size: 0.88rem;
+        font-weight: 500;
+    }
+    .federal-banner strong {
+        color: #0a2e4a !important;
+    }
 </style>
 """

@@ -88,9 +88,12 @@ class IRSRetriever:
 
 
 def chromadb_has_documents() -> bool:
-    """Quick check if ChromaDB has any ingested documents."""
+    """Quick check if ChromaDB has any ingested documents (no embedding model needed)."""
     try:
-        retriever = IRSRetriever()
-        return retriever.has_documents()
+        persist_dir = os.getenv("CHROMA_PERSIST_DIR", "./rag/chroma_store")
+        from utils.constants import CHROMA_COLLECTION_NAME
+        client = chromadb.PersistentClient(path=persist_dir)
+        collection = client.get_or_create_collection(name=CHROMA_COLLECTION_NAME)
+        return collection.count() > 0
     except Exception:
         return False

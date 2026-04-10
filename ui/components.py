@@ -87,6 +87,17 @@ def render_progress_bar(current: int, total: int, label: str = ""):
         st.progress(progress, text=label)
 
 
+def render_federal_only_banner():
+    """Render a persistent federal-taxes-only reminder."""
+    st.markdown(
+        '<div class="federal-banner">'
+        "<strong>Federal taxes only.</strong> OpenReturn covers US federal tax forms. "
+        "State and local taxes are not included."
+        "</div>",
+        unsafe_allow_html=True,
+    )
+
+
 def render_footer():
     """Render the app footer."""
     st.markdown(

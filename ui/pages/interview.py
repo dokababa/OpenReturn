@@ -22,10 +22,11 @@ INCOME_FORM_KEYS = [
     ("has_1099_g", "1099-G", "Unemployment compensation"),
     ("has_1099_r", "1099-R", "Retirement distributions"),
     ("has_1042s", "1042-S", "Foreign person's US source income"),
+    ("has_1098t", "1098-T", "Tuition statement from your school"),
 ]
 
 # These income questions are yes/no and stay as separate questions
-INCOME_YESNO_KEYS = {"has_capital_gains", "has_foreign_income"}
+INCOME_YESNO_KEYS = {"has_capital_gains", "has_foreign_income", "scholarship_exceeds_tuition"}
 
 
 def _render_stage_select(questions: list[dict]):
