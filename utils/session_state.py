@@ -90,7 +90,9 @@ def get_interview_answers() -> dict:
         "home_country": st.session_state.home_country,
         "years_in_us_as_student": st.session_state.years_in_us_as_student,
         "has_itin": st.session_state.has_itin,
-        "is_f_or_j_visa": st.session_state.get("visa_type") in ("F-1", "J-1", "OPT (post-F-1)"),
+        "is_f_or_j_visa": st.session_state.get("visa_type") in (
+            "F-1", "F-2", "J-1", "J-2", "M-1", "M-2", "Q-1", "Q-2", "OPT (post-F-1)"
+        ),
         "has_w2": st.session_state.has_w2,
         "has_1099_nec": st.session_state.has_1099_nec,
         "has_freelance": st.session_state.has_1099_nec,

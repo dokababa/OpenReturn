@@ -40,8 +40,8 @@ INTERVIEW_QUESTIONS = [
     },
     {
         "id": 13,
-        "text": "Are you an international student or on a visa (F-1, J-1, H-1B, OPT, etc.)?",
-        "why": "Visa holders may have special tax treaty benefits and different filing requirements.",
+        "text": "Are you a non-US citizen currently in the US on a visa?",
+        "why": "Your visa type affects which tax form you file, whether you're exempt from certain taxes, and which treaty benefits you may claim.",
         "stage": "residency",
         "state_key": "is_international_student",
         "type": "yes_no",
@@ -50,7 +50,7 @@ INTERVIEW_QUESTIONS = [
     {
         "id": 22,
         "text": "What type of visa are you on?",
-        "why": "Your visa type determines which forms you must file. F-1 and J-1 students must file Form 8843 every year — even with zero income.",
+        "why": "Different visas have different tax rules. F-1/J-1 holders are exempt from the Substantial Presence Test for the first 5 years and must file Form 8843. H-1B/L-1/O-1/TN holders follow normal residency rules.",
         "stage": "residency",
         "state_key": "visa_type",
         "type": "select",
@@ -60,7 +60,7 @@ INTERVIEW_QUESTIONS = [
     {
         "id": 24,
         "text": "What country are you originally from?",
-        "why": "The US has tax treaties with many countries that can reduce or eliminate tax on scholarship and fellowship income for students. We'll check if your country has a treaty.",
+        "why": "The US has tax treaties with many countries that can reduce or eliminate tax on certain income types. We'll check if your country qualifies.",
         "stage": "residency",
         "state_key": "home_country",
         "type": "select",
@@ -69,13 +69,13 @@ INTERVIEW_QUESTIONS = [
     },
     {
         "id": 23,
-        "text": "How many years have you been present in the US as a student (F-1/J-1)?",
-        "why": "F-1/J-1 students are exempt from the Substantial Presence Test for their first 5 years, meaning you file as a nonresident alien (Form 1040-NR) regardless of days in the US.",
+        "text": "How many years have you been present in the US on your current visa?",
+        "why": "F-1/J-1/M-1/Q-1 visa holders are exempt from the Substantial Presence Test for their first 5 calendar years. After that, normal residency rules apply.",
         "stage": "residency",
         "state_key": "years_in_us_as_student",
         "type": "select",
         "options": ["1 year or less", "2 years", "3 years", "4 years", "5 or more years"],
-        "skip_if": lambda s: s.get("visa_type") not in ("F-1", "J-1"),
+        "skip_if": lambda s: s.get("visa_type") not in ("F-1", "F-2", "J-1", "J-2", "M-1", "M-2", "OPT (post-F-1)"),
     },
     # STAGE 2 — Personal
     {

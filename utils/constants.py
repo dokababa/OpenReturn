@@ -36,8 +36,30 @@ FILING_STATUSES = [
     "Head of Household",
 ]
 
-# Visa types shown in the interview
-STUDENT_VISA_TYPES = ["F-1", "J-1", "OPT (post-F-1)", "H-1B", "H-4", "L-1", "O-1", "TN", "Other"]
+# Visa types shown in the interview — covers all common nonimmigrant categories
+VISA_TYPES = [
+    "F-1",           # Student
+    "F-2",           # F-1 dependent
+    "J-1",           # Exchange visitor (student/scholar/researcher)
+    "J-2",           # J-1 dependent
+    "OPT (post-F-1)",  # Optional Practical Training
+    "M-1",           # Vocational student
+    "H-1B",          # Specialty occupation worker
+    "H-4",           # H-1B dependent
+    "L-1",           # Intracompany transferee
+    "L-2",           # L-1 dependent
+    "O-1",           # Extraordinary ability
+    "TN",            # USMCA professional (Canada/Mexico)
+    "E-1",           # Treaty trader
+    "E-2",           # Treaty investor
+    "E-3",           # Australian specialty worker
+    "R-1",           # Religious worker
+    "B-1/B-2",       # Visitor (business/tourist)
+    "Other",
+]
+
+# Legacy alias used in interview_agent
+STUDENT_VISA_TYPES = VISA_TYPES
 
 # Countries with US tax treaties relevant to students.
 # benefit: None means no treaty — users from those countries get no exemption.

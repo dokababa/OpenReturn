@@ -11,12 +11,31 @@ LANDING_CSS = """
     /* === Hero Section === */
     .hero-section {
         text-align: center;
-        padding: 3rem 1rem 2rem;
+        padding: 3.5rem 2rem 2.5rem;
+        background:
+            linear-gradient(
+                135deg,
+                rgba(248,250,249,0.92) 0%,
+                rgba(232,245,236,0.88) 50%,
+                rgba(234,247,242,0.90) 100%
+            ),
+            url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&q=80') center/cover no-repeat;
+        border-radius: 16px;
+        margin: -1rem -1rem 1.5rem -1rem;
+        border: 1px solid #d1ddd8;
+    }
+    .hero-app-name {
+        font-size: 4rem;
+        font-weight: 900;
+        color: #0f2b24 !important;
+        letter-spacing: -0.04em;
+        margin-bottom: 0.75rem;
+        line-height: 1;
     }
     .hero-badge {
         display: inline-block;
-        background: #e8f5ec;
-        color: #166534;
+        background: rgba(30,111,92,0.12);
+        color: #166534 !important;
         font-size: 0.8rem;
         font-weight: 600;
         padding: 6px 16px;
@@ -25,10 +44,10 @@ LANDING_CSS = """
         letter-spacing: 0.03em;
     }
     .hero-title {
-        font-size: 3.2rem;
+        font-size: 2.4rem;
         font-weight: 800;
         color: #0f2b24 !important;
-        line-height: 1.1;
+        line-height: 1.15;
         margin-bottom: 0.5rem;
         letter-spacing: -0.03em;
     }
@@ -39,7 +58,7 @@ LANDING_CSS = """
         background-clip: text;
     }
     .hero-subtitle {
-        font-size: 1.25rem;
+        font-size: 1.15rem;
         color: #4a6e64 !important;
         max-width: 540px;
         margin: 0 auto 2rem;
@@ -293,6 +312,7 @@ def render():
     st.markdown(
         """
         <div class="hero-section">
+            <div class="hero-app-name">OpenReturn</div>
             <div class="hero-badge">100% Free &bull; No Sign-Up Required</div>
             <div class="hero-title">
                 Understand Your<br><span>US Tax Forms</span>
